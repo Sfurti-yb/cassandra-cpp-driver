@@ -1,18 +1,13 @@
-# DataStax C/C++ Driver for Apache Cassandra® and DataStax Products
+# YugaByte C++ Driver for YugaByte DB's Cassandra-compatible YCQL API
 
-A modern, feature-rich and highly tunable C/C++ client library for
-[Apache Cassandra®] 2.1+ using exclusively Cassandra's binary protocol and
-Cassandra Query Language v3. This driver can also be used with other DataStax
-products:
-
-* [DataStax Enterprise]
-* [DataStax Astra]
+A modern, feature-rich and highly tunable C/C++ client library for YugaByte DB's Cassandra-compatible YCQL API
+using exclusively Cassandra's binary protocol and Cassandra Query Language v3.
 
 ## Getting the Driver
 
-The source code is made available via [GitHub].  Additionally binary versions of
-the driver (for multiple operating systems and multiple architectures) can be
-obtained from our [Artifactory server].  Binaries are available for the following
+Binary versions of the driver, available for multiple operating systems and
+multiple architectures, can be obtained from our [download server]. The
+source code is made available via [GitHub].  Binaries are available for the following
 operating systems:
 
 * CentOS 7
@@ -91,11 +86,7 @@ dependencies for a specific platform.
 ## Compatibility
 
 This driver works exclusively with the Cassandra Query Language v3 (CQL3) and
-Cassandra's native protocol. The current version works with the following
-server versions:
-
-* Apache Cassandra® versions 3.0.x, 3.11.x and 4.0.x
-* DSE versions 6.8.x and 5.1.x
+Cassandra's native protocol for YugaByte DB's Cassandra-compatible YCQL API.
 
 Both 32-bit (x86) and 64-bit (x64) architectures are supported
 
@@ -108,22 +99,16 @@ We build and test the driver on the following platforms:
 * Ubuntu 22.04 w/ gcc 11.3.0
 * Microsoft Visual Studio 2013, 2015, 2017 and 2019
 
-A complete compatibility matrix for both Apache Cassandra®
-and DataStax Enterprise can be found [here][cpp-driver-compatability-matrix].
-
-__Disclaimer__: DataStax products do not support big-endian systems.
-
 ## Documentation
 
 * [Home]
 * [API]
-* [Getting Started]
+* [Getting started guide][getting-started]: https://docs.yugabyte.com/latest/develop/client-drivers/csharp/
 * [Building]
 
 ## Getting Help
 
-* JIRA: [jira]
-* Mailing List: [mailing list]
+Please report any issues on github.
 
 ## Examples
 
@@ -208,6 +193,8 @@ int main(int argc, char* argv[]) {
 
 ## License
 
+Copyright 2018, YugaByte, Inc.
+
 &copy; DataStax, Inc.
 
 Licensed under the Apache License, Version 2.0 (the “License”); you may not use
@@ -222,6 +209,7 @@ CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 
 [Apache Cassandra®]: http://cassandra.apache.org
+[DSE C/C++ driver]: http://docs.datastax.com/en/developer/cpp-driver-dse/latest
 [DataStax Enterprise]: http://www.datastax.com/products/datastax-enterprise
 [Examples]: examples/
 [Artifactory server]: https://datastax.jfrog.io/artifactory/cpp-php-drivers/cpp-driver/builds
