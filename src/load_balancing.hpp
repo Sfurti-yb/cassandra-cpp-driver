@@ -50,11 +50,14 @@ typedef enum CassHostDistance_ {
 
 namespace datastax { namespace internal {
 
+class ControlConnection;
+class Metadata;
 class Random;
 
 namespace core {
 
 class RequestHandler;
+class Session;
 class TokenMap;
 
 inline bool is_dc_local(CassConsistency cl) {
@@ -82,12 +85,13 @@ public:
   typedef Vector<Ptr> Vec;
 
   LoadBalancingPolicy()
-      : RefCounted<LoadBalancingPolicy>() {}
+      : RefCounted<LoadBalancingPolicy>(), session_(NULL) {}
 
   virtual ~LoadBalancingPolicy() {}
 
   virtual void init(const Host::Ptr& connected_host, const HostMap& hosts, Random* random,
                     const String& local_dc) = 0;
+  virtual void init_session(Session* session) { session_ = session; }
 
   virtual void register_handles(uv_loop_t* loop) {}
   virtual void close_handles() {}
@@ -100,10 +104,25 @@ public:
   virtual void on_host_up(const Host::Ptr& host) = 0;
   virtual void on_host_down(const Address& address) = 0;
 
-  virtual QueryPlan* new_query_plan(const String& keyspace, RequestHandler* request_handler,
-                                    const TokenMap* token_map) = 0;
+  virtual QueryPlan* new_query_plan(const String& keyspace,
+                                    RequestHandler* request_handler,
+                                    Session* session) {
+    init_session(session);
+    return new_query_plan(keyspace, request_handler);
+  }
+
+  virtual QueryPlan* new_query_plan(const String& keyspace,
+                                    RequestHandler* request_handler) = 0;
 
   virtual LoadBalancingPolicy* new_instance() = 0;
+
+protected:
+  ControlConnection* control_connection();
+
+  const Metadata* metadata() const;
+  const TokenMap* token_map() const;
+
+  Session* session_;
 };
 
 inline bool is_host_ignored(const LoadBalancingPolicy::Vec& policies, const Host::Ptr& host) {
@@ -129,6 +148,14 @@ public:
   }
 
   virtual const LoadBalancingPolicy::Ptr& child_policy() const { return child_policy_; }
+
+  virtual void init_session(Session* session) {
+    LoadBalancingPolicy::init_session(session);
+    child_policy_->init_session(session);
+  }
+
+  virtual void register_handles(uv_loop_t* loop) { child_policy_->register_handles(loop); }
+  virtual void close_handles() { child_policy_->close_handles(); }
 
   virtual CassHostDistance distance(const Host::Ptr& host) const {
     return child_policy_->distance(host);

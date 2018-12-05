@@ -51,8 +51,8 @@ void TokenAwarePolicy::init(const Host::Ptr& connected_host, const HostMap& host
   ChainedLoadBalancingPolicy::init(connected_host, hosts, random, local_dc);
 }
 
-QueryPlan* TokenAwarePolicy::new_query_plan(const String& keyspace, RequestHandler* request_handler,
-                                            const TokenMap* token_map) {
+QueryPlan* TokenAwarePolicy::new_query_plan(const String& keyspace,
+                                            RequestHandler* request_handler) {
   if (request_handler != NULL) {
     const RoutableRequest* request =
         static_cast<const RoutableRequest*>(request_handler->request());
@@ -63,15 +63,15 @@ QueryPlan* TokenAwarePolicy::new_query_plan(const String& keyspace, RequestHandl
         case CQL_OPCODE_BATCH:
           String routing_key;
           if (request->get_routing_key(&routing_key) && !keyspace.empty()) {
-            if (token_map != NULL) {
-              CopyOnWriteHostVec replicas = token_map->get_replicas(keyspace, routing_key);
+            if (token_map() != NULL) {
+              CopyOnWriteHostVec replicas = token_map()->get_replicas(keyspace, routing_key);
               if (replicas && !replicas->empty()) {
-                if (random_ != NULL) {
+                if (shuffle_replicas_ && random_ != NULL) {
                   random_shuffle(replicas->begin(), replicas->end(), random_);
                 }
                 return new TokenAwareQueryPlan(
                     child_policy_.get(),
-                    child_policy_->new_query_plan(keyspace, request_handler, token_map), replicas,
+                    child_policy_->new_query_plan(keyspace, request_handler), replicas,
                     index_);
               }
             }
@@ -83,7 +83,7 @@ QueryPlan* TokenAwarePolicy::new_query_plan(const String& keyspace, RequestHandl
         break;
     }
   }
-  return child_policy_->new_query_plan(keyspace, request_handler, token_map);
+  return child_policy_->new_query_plan(keyspace, request_handler);
 }
 
 Host::Ptr TokenAwarePolicy::TokenAwareQueryPlan::compute_next() {

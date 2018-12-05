@@ -44,6 +44,7 @@ class Connection;
 class ConnectionPoolManager;
 class Pool;
 class ExecutionProfile;
+class Session;
 class Timer;
 class TokenMap;
 
@@ -164,9 +165,7 @@ public:
 
   void set_prepared_metadata(const PreparedMetadata::Entry::Ptr& entry);
 
-  void init(const ExecutionProfile& profile, ConnectionPoolManager* manager,
-            const TokenMap* token_map, TimestampGenerator* timestamp_generator,
-            RequestListener* listener);
+  void init(Session* session);
 
   void execute();
 

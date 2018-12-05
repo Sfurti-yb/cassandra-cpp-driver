@@ -416,6 +416,11 @@ void Cluster::handle_schedule_reconnect() {
     reconnector_->with_settings(settings_.control_connection_settings)
         ->connect(connection_->loop());
   } else {
+    inc_error(CLUSTER_ERROR_NO_HOSTS_AVAILABLE);
+    notify_down();
+  }
+}
+  } else {
     // No more hosts, refresh the query plan and schedule a re-connection
     LOG_TRACE("Control connection query plan has no more hosts. "
               "Reset query plan and schedule reconnect");

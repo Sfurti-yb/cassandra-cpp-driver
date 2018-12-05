@@ -189,39 +189,22 @@ void RequestHandler::set_prepared_metadata(const PreparedMetadata::Entry::Ptr& e
   wrapper_.set_prepared_metadata(entry);
 }
 
-void RequestHandler::init(const ExecutionProfile& profile, ConnectionPoolManager* manager,
-                          const TokenMap* token_map, TimestampGenerator* timestamp_generator,
-                          RequestListener* listener) {
-  manager_ = manager;
-  listener_ = listener ? listener : &nop_request_listener__;
-  wrapper_.init(profile, timestamp_generator);
+void RequestHandler::init(Session* session) {
+  const Config& config = session->config();
+  wrapper_.init(config, session->prepared_metadata());
 
   // Attempt to use the statement's keyspace first then if not set then use the session's keyspace
-  const String& keyspace(!request()->keyspace().empty() ? request()->keyspace()
-                                                        : manager_->keyspace());
+  const String& keyspace(!request()->keyspace().empty() ? request()->keyspace() : session->keyspace());
 
   // If a specific host is set then bypass the load balancing policy and use a
   // specialized single host query plan.
   if (request()->host()) {
     query_plan_.reset(new SingleHostQueryPlan(*request()->host()));
   } else {
-    query_plan_.reset(profile.load_balancing_policy()->new_query_plan(keyspace, this, token_map));
+    query_plan_.reset(config.load_balancing_policy()->new_query_plan(keyspace, this, session));
   }
-
-  execution_plan_.reset(
-      profile.speculative_execution_policy()->new_plan(keyspace, wrapper_.request().get()));
+  execution_plan_.reset(config.speculative_execution_policy()->new_plan(keyspace, wrapper_.request().get()));
 }
-
-void RequestHandler::execute() {
-  RequestExecution::Ptr request_execution(new RequestExecution(this));
-  running_executions_++;
-  internal_retry(request_execution.get());
-}
-
-void RequestHandler::retry(RequestExecution* request_execution, Protected) {
-  internal_retry(request_execution);
-}
-
 void RequestHandler::start_request(uv_loop_t* loop, Protected) {
   if (!timer_.is_running()) {
     uint64_t request_timeout_ms = wrapper_.request_timeout_ms();

@@ -56,8 +56,8 @@ public:
   virtual void register_handles(uv_loop_t* loop);
   virtual void close_handles();
 
-  virtual QueryPlan* new_query_plan(const String& keyspace, RequestHandler* request_handler,
-                                    const TokenMap* token_map);
+  virtual QueryPlan* new_query_plan(const String& keyspace,
+                                    RequestHandler* request_handler);
 
   virtual LoadBalancingPolicy* new_instance() {
     return new LatencyAwarePolicy(child_policy_->new_instance(), settings_);
