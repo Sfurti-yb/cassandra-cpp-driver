@@ -11551,6 +11551,10 @@ cass_alloc_set_functions(CassMallocFunction malloc_func,
                          CassReallocFunction realloc_func,
                          CassFreeFunction free_func);
 
+CASS_EXPORT cass_bool_t
+cass_partition_aware_policy_get_yb_hash_code(CassStatement* statement,
+                                             cass_int64_t* token);
+
 #ifdef __cplusplus
 } /* extern "C" */
 #endif

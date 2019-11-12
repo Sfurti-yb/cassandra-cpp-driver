@@ -20,6 +20,7 @@
 #include "execute_request.hpp"
 #include "external.hpp"
 #include "macros.hpp"
+#include "partition_aware_policy.hpp"
 #include "prepared.hpp"
 #include "protocol.hpp"
 #include "query_request.hpp"
@@ -261,6 +262,13 @@ CassError cass_statement_bind_custom_by_name_n(CassStatement* statement, const c
                                                size_t value_size) {
   return statement->set(StringRef(name, name_length),
                         CassCustom(StringRef(class_name, class_name_length), value, value_size));
+}
+
+cass_bool_t cass_partition_aware_policy_get_yb_hash_code(CassStatement* statement,
+                                                         cass_int64_t* token) {
+  std::string full_table_name;
+  return cass::PartitionAwarePolicy::get_yb_hash_code(
+      statement->from(), token, &full_table_name) ? cass_true : cass_false;
 }
 
 } // extern "C"
