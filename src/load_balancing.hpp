@@ -25,6 +25,8 @@
 #include "string.hpp"
 #include "vector.hpp"
 
+#include <atomic>
+
 #include <uv.h>
 
 extern "C" {
@@ -85,7 +87,7 @@ public:
   typedef Vector<Ptr> Vec;
 
   LoadBalancingPolicy()
-      : RefCounted<LoadBalancingPolicy>(), session_(NULL) {}
+      : RefCounted<LoadBalancingPolicy>() {}
 
   virtual ~LoadBalancingPolicy() {}
 
@@ -122,7 +124,8 @@ protected:
   const Metadata* metadata() const;
   const TokenMap* token_map() const;
 
-  Session* session_;
+private:
+  std::atomic<Session*> session_{nullptr};
 };
 
 inline bool is_host_ignored(const LoadBalancingPolicy::Vec& policies, const Host::Ptr& host) {
