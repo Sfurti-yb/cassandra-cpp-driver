@@ -78,6 +78,14 @@ public:
 
   virtual ~ControlConnectionListener() {}
 
+  static std::string get_yb_select_partitions_statement();
+
+  enum State {
+    CONTROL_STATE_NEW,
+    CONTROL_STATE_READY,
+    CONTROL_STATE_CLOSED
+  };
+
   /**
    * A callback that's called when a host is marked as being UP.
    *
@@ -140,8 +148,6 @@ public:
 
   void on_up(const Address& address);
   void on_down(const Address& address);
-
-  void refresh_partitions();
 
 private:
   template<class T>
