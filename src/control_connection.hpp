@@ -334,9 +334,7 @@ private:
   bool partition_aware_routing_;
   bool token_aware_routing_;
 
-private:
   DISALLOW_COPY_AND_ASSIGN(ControlConnection);
->>>>>>> 2f64ab8e (Partition Aware Policy feature in the C++ driver.)
 };
 
 /**

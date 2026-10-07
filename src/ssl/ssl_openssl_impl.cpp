@@ -105,7 +105,6 @@ static String ssl_error_string() {
   const char* data;
   int flags;
   int err;
-<<<<<<< HEAD
   String error;
   while ((err =
 #if (OPENSSL_VERSION_NUMBER >= 0x30000000L)
@@ -114,10 +113,6 @@ static String ssl_error_string() {
               ERR_get_error_line_data(NULL, NULL, &data, &flags)
 #endif
               ) != 0) {
-=======
-  std::string error;
-  while ((err = ERR_get_error_all(NULL, NULL, NULL, &data, &flags)) != 0) {
->>>>>>> a204607d (Remove calls to ERR_get_error_line_data deprecated with OpenSSL 3 (#21))
     char buf[256];
     ERR_error_string_n(err, buf, sizeof(buf));
     if (!error.empty()) error.push_back(',');
