@@ -27,15 +27,15 @@
  *
  */
 
-#ifndef __CASS_JENKINS_HASH_HPP_INCLUDED__
-#define __CASS_JENKINS_HASH_HPP_INCLUDED__
+#ifndef DATASTAX_INTERNAL_JENKINS_HASH_HPP
+#define DATASTAX_INTERNAL_JENKINS_HASH_HPP
 
 #include <cstdint>
 
-namespace cass {
+namespace datastax { namespace internal { namespace core {
 
 uint64_t Hash64StringWithSeed(const char *s, uint32_t len, uint64_t c);
 
-} // namespace cass
+} } } // namespace datastax::internal::core
 
 #endif // __CASS_JENKINS_HASH_HPP_INCLUDED__

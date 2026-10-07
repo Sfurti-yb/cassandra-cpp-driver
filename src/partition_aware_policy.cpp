@@ -24,7 +24,7 @@
 #include "request_handler.hpp"
 #include "session.hpp"
 
-namespace cass {
+namespace datastax { namespace internal { namespace core {
 
 #if 0 // Enable if used
 static int32_t yb_to_cql_hash_code(int64_t yb_hash) {
@@ -179,7 +179,7 @@ void PartitionAwarePolicy::init(const Host::Ptr& connected_host,
   ChainedLoadBalancingPolicy::init(connected_host, hosts, random);
 }
 
-QueryPlan* PartitionAwarePolicy::new_query_plan(const std::string& keyspace,
+QueryPlan* PartitionAwarePolicy::new_query_plan(const String& keyspace,
                                                 RequestHandler* request_handler) {
   QueryPlan* const child_plan = child_policy_->new_query_plan(keyspace, request_handler);
 
@@ -296,4 +296,4 @@ Host::Ptr PartitionAwarePolicy::PartitionAwareQueryPlan::compute_next() {
   return Host::Ptr();
 }
 
-} // namespace cass
+} } } // namespace datastax::internal::core

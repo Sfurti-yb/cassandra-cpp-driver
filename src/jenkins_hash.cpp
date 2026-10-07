@@ -82,7 +82,7 @@
 #define JENKINS_ULONGLONG(x) x##ULL
 #define UNALIGNED_LOAD64(_p) (*reinterpret_cast<const uint64_t *>(_p))
 
-namespace cass {
+namespace datastax { namespace internal { namespace core {
 
 // ----------------------------------------------------------------------
 // mix()
@@ -226,4 +226,4 @@ uint64_t Hash64StringWithSeed(const char *s, uint32_t len, uint64_t c) {
   return c;
 }
 
-} // namespace cass
+} } } // namespace datastax::internal::core

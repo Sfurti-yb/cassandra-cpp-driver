@@ -10,13 +10,13 @@
 // or implied.  See the License for the specific language governing permissions and limitations
 // under the License.
 //
-#ifndef __CASS_PARTITION_AWARE_POLICY_HPP_INCLUDED__
-#define __CASS_PARTITION_AWARE_POLICY_HPP_INCLUDED__
+#ifndef DATASTAX_INTERNAL_PARTITION_AWARE_POLICY_HPP
+#define DATASTAX_INTERNAL_PARTITION_AWARE_POLICY_HPP
 
 #include "load_balancing.hpp"
 #include "periodic_task.hpp"
 
-namespace cass {
+namespace datastax { namespace internal { namespace core {
 
 class CASS_EXPORT PartitionAwarePolicy: public ChainedLoadBalancingPolicy {
 public:
@@ -29,7 +29,7 @@ public:
 
   virtual void init(const Host::Ptr& connected_host, const HostMap& hosts, Random* random);
 
-  virtual QueryPlan* new_query_plan(const std::string& keyspace,
+  virtual QueryPlan* new_query_plan(const String& keyspace,
                                     RequestHandler* request_handler);
 
   virtual void on_add(const Host::Ptr& host);
@@ -79,6 +79,6 @@ private:
   DISALLOW_COPY_AND_ASSIGN(PartitionAwarePolicy);
 };
 
-} // namespace cass
+}}} // namespace datastax::internal::core
 
 #endif
